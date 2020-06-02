@@ -1,3 +1,4 @@
+"""
 # USAGE
 # python yolo_video.py --input videos/airport.mp4 --output output/airport_output.avi --yolo yolo-coco
 
@@ -167,3 +168,4 @@ while True:
 print("[INFO] cleaning up...")
 writer.release()
 vs.release()
+"""
