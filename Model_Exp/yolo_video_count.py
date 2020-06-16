@@ -137,9 +137,8 @@ while True:
 			text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
 			cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 			freq1 = [j for j in classIDs]
-			#freq = [[LABELS[classIDs[x]], classIDs.count(x)] for x in set(classIDs)]
 			freq = dict([LABELS[x], classIDs.count(x)] for x in set(classIDs))
-			print("Class:", freq, freq1)
+			#print("Class:", freq, freq1)
 			freq = str(freq)[1:-1]
 			text1 = "{}".format(freq)
 			cv2.putText(frame, text1, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (209, 80, 0, 255), 3)
