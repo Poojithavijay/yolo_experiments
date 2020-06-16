@@ -5,10 +5,14 @@ import imutils
 import time
 import cv2
 import os
+from collections import Counter
+
+print("Running")
 
 # construct the argument parse and parse the arguments
 # load the COCO class labels our YOLO model was trained on
-labelsPath = r"E:\yolo-object-detection\yolo-coco\coco.names"
+labelsPath = r"D:\yolo-object-detection\yolo-coco\coco.names"
+#labelsPath = os.path.sep.join([args["yolo"], "coco.names"])
 LABELS = open(labelsPath).read().strip().split("\n")
 
 # initialize a list of colors to represent each possible class label
@@ -17,10 +21,10 @@ COLORS = np.random.randint(0, 255, size=(len(LABELS), 3),
 	dtype="uint8")
 
 # derive the paths to the YOLO weights and model configuration
-weightsPath = r"E:\yolo-object-detection\yolo-coco\yolov3.weights"
-print("Weights Loaded!")
-configPath = r"E:\yolo-object-detection\yolo-coco\yolov3.cfg"
-print("Config Loaded!")
+weightsPath = r"D:\yolo-object-detection\yolo-coco\yolov3.weights"
+print("Done")
+configPath = r"D:\yolo-object-detection\yolo-coco\yolov3.cfg"
+print("Done")
 
 # load our YOLO object detector trained on COCO dataset (80 classes)
 # and determine only the *output* layer names that we need from YOLO
@@ -31,7 +35,7 @@ ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
 # initialize the video stream, pointer to output video file, and
 # frame dimensions
-vs = cv2.VideoCapture(r"E:\yolo-object-detection\videos\vietnam.mp4")
+vs = cv2.VideoCapture(r"D:\yolo-object-detection\videos\overpass.mp4") 
 writer = None
 (W, H) = (None, None)
 
@@ -116,7 +120,8 @@ while True:
 
 	# apply non-maxima suppression to suppress weak, overlapping
 	# bounding boxes
-	idxs = cv2.dnn.NMSBoxes(boxes, confidences, 0.4, 0.3)
+	idxs = cv2.dnn.NMSBoxes(boxes, confidences, 0.3,
+		0.2)
 
 	# ensure at least one detection exists
 	if len(idxs) > 0:
@@ -131,16 +136,19 @@ while True:
 			cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
 			text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
 			cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-			freq = len([boxes.count(i) for i in boxes])
-			#freq = len(boxes[i])
-			text1 = "Number of objects in the frame: {}".format(freq)
-			cv2.putText(frame, text1, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_4)
+			freq1 = [j for j in classIDs]
+			#freq = [[LABELS[classIDs[x]], classIDs.count(x)] for x in set(classIDs)]
+			freq = dict([LABELS[x], classIDs.count(x)] for x in set(classIDs))
+			print("Class:", freq, freq1)
+			freq = str(freq)[1:-1]
+			text1 = "{}".format(freq)
+			cv2.putText(frame, text1, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (209, 80, 0, 255), 3)
 
 	# check if the video writer is None
 	if writer is None:
 		# initialize our video writer
 		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-		writer = cv2.VideoWriter(r"E:\yolo-object-detection\output\t.avi", fourcc, 30, (frame.shape[1], frame.shape[0]), True)
+		writer = cv2.VideoWriter(r"D:\yolo-object-detection\output\Test2.avi", fourcc, 30, (frame.shape[1], frame.shape[0]), True)
 
 		# some information on processing single frame
 		if total > 0:
